@@ -8,7 +8,8 @@ import {
 } from '@angular/core';
 import { CommentForm } from '../comment-form/comment-form';
 import { Comment as CommentType } from '../../interfaces/comment.interface';
-import { CommentService } from '../../services/comment';
+import { CommentDto, CommentService } from '../../services/comment';
+import { UserService } from '../../services/user';
 
 @Component({
   selector: 'app-comment',
@@ -22,6 +23,7 @@ export class Comment {
   commentService = inject(CommentService);
   comment = input.required<CommentType>();
   nestedComments = signal<CommentType[]>([]);
+  userService = inject(UserService);
 
   nestedCommentsEffect = effect(() => {
     if (this.expanded()) {
@@ -58,5 +60,30 @@ export class Comment {
     if (this.isReplying()) {
       this.expanded.set(true); // Automatically expand when replying
     }
+  }
+
+  createComment(event: { text: string }) {
+    const user = this.userService.getUserFromStorage();
+    if (!user) {
+      console.error('User not found in storage');
+      return;
+    }
+    const newComment: CommentDto = {
+      text: event.text,
+      userId: user._id,
+      parentId: this.comment()._id,
+    };
+
+    this.commentService.createComment(newComment).subscribe({
+      next: (comment: any) => {
+        this.nestedComments.update((currentComments) => [
+          comment,
+          ...currentComments,
+        ]);
+      },
+      error: (err) => {
+        console.error('Error creating comment:', err);
+      },
+    });
   }
 }

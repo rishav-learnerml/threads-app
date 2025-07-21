@@ -3,6 +3,12 @@ import { inject, Injectable } from '@angular/core';
 import { Comment } from '../interfaces/comment.interface';
 import { environment } from '../environments';
 
+export interface CommentDto {
+  text: string;
+  userId: string;
+  parentId?: string;
+}
+
 @Injectable({
   providedIn: 'root',
 })
@@ -14,18 +20,23 @@ export class CommentService {
     if (parentId) {
       url += `?parentId=${parentId}`;
     }
-    console.log('url', url);
     return this.http.get<Comment[]>(url);
   }
 
   incrementLikes(commentId: string) {
     const url = `${environment.apiBaseUrl}/comments/${commentId}/like`;
-    console.log(url)
     return this.http.get<Comment[]>(url);
   }
 
   decrementLikes(commentId: string) {
     const url = `${environment.apiBaseUrl}/comments/${commentId}/dislike`;
     return this.http.get<Comment[]>(url);
+  }
+
+  createComment(comment: CommentDto) {
+    return this.http.post<CommentDto>(
+      `${environment.apiBaseUrl}/comments`,
+      comment
+    );
   }
 }

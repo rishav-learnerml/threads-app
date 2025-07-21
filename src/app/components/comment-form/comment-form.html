@@ -1,14 +1,14 @@
-<form class="flex flex-col items-end gap-4" >
+<form class="flex flex-col items-end gap-4 mb-4" (submit)="formSubmit($event)">
   <textarea
     name="input-box"
     rows="3"
-    class="w-full border border-slate-300 rounded-md px-3 py-1.5"
-    placeholder="write something..."
+    class="w-full border border-slate-300 rounded-md px-3 py-1.5 text-gray-100 placeholder:text-gray-300"
+    [placeholder]="placeholder()"
   ></textarea>
   <button
     type="submit"
     class="inline-block rounded border border-current px-4 py-1 text-sm font-medium text-slate-100 transition hover:rotate-2 hover:scale-110 focus:outline-none focus:ring active:text-indigo-500"
   >
-    send
+    {{ buttonText() }}
   </button>
 </form>

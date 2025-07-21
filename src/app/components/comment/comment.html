@@ -1,5 +1,5 @@
 <article
-  class="block rounded-md border border-gray-200 p-4 shadow-md sm:p-6 bg-slate-700 text-white"
+  class="block mt-2 rounded-md border border-gray-200 p-4 shadow-md sm:p-6 bg-slate-700 text-white"
 >
   <div class="sm:flex sm:justify-between sm:gap-4 lg:gap-6">
     <div class="mt-4 sm:mt-0">
@@ -67,12 +67,12 @@
   </dl>
   @if (isReplying()) {
   <section class="nested-comments duration-200 my-4">
-    <app-comment-form></app-comment-form>
+    <app-comment-form placeholder="Write your reply" buttonText="Send" (formSubmitted)="createComment($event)"></app-comment-form>
   </section>
   } @if (expanded()) {
   <section class="nested-comments duration-200 my-4">
     @for (ncomment of nestedComments(); track ncomment._id) {
-    <app-comment [comment]="ncomment"></app-comment>
+    <app-comment [comment]="ncomment" ></app-comment>
     }
   </section>
   }
