@@ -1,0 +1,6 @@
+<section class="max-w-lg mx-auto flex flex-col gap-4">
+  @for(comment of comments(); track comment._id)
+  {
+    <app-comment [comment]="comment" />
+  }
+</section>
