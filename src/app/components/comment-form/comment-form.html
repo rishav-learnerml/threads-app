@@ -1,14 +1,20 @@
-<form class="flex flex-col items-end gap-4 mb-4" (submit)="formSubmit($event)">
+<form
+  class="bg-[#101010] mb-4 rounded-xl border border-gray-800 shadow-sm p-4 flex flex-col gap-3"
+  (submit)="formSubmit($event)"
+>
   <textarea
     name="input-box"
     rows="3"
-    class="w-full border border-slate-300 rounded-md px-3 py-1.5 text-gray-100 placeholder:text-gray-300"
+    class="w-full resize-none rounded-md border border-gray-700 bg-[#1a1a1a] px-4 py-2 text-sm text-gray-200 placeholder-gray-500 focus:ring-2 focus:ring-white focus:outline-none"
     [placeholder]="placeholder()"
   ></textarea>
-  <button
-    type="submit"
-    class="inline-block rounded border border-current px-4 py-1 text-sm font-medium text-slate-100 transition hover:rotate-2 hover:scale-110 focus:outline-none focus:ring active:text-indigo-500"
-  >
-    {{ buttonText() }}
-  </button>
+
+  <div class="flex justify-end">
+    <button
+      type="submit"
+      class="rounded-full bg-white text-black px-5 py-1.5 text-sm font-medium hover:bg-gray-200 transition-all"
+    >
+      {{ buttonText() }}
+    </button>
+  </div>
 </form>

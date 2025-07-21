@@ -1,79 +1,97 @@
 <article
-  class="block mt-2 rounded-md border border-gray-200 p-4 shadow-md sm:p-6 bg-slate-700 text-white"
+  class="bg-[#101010] rounded-xl border border-gray-800 shadow-sm p-4 sm:p-6 text-white"
 >
-  <div class="sm:flex sm:justify-between sm:gap-4 lg:gap-6">
-    <div class="mt-4 sm:mt-0">
-      <h3 class="text-lg font-medium text-pretty text-gray-100">
+  <div class="flex items-start gap-4">
+    <!-- Avatar -->
+    <img
+      [src]="`https://api.dicebear.com/7.x/fun-emoji/svg?seed=${comment().user.name}`"
+      class="h-10 w-10 rounded-full object-cover border border-gray-700"
+      alt="User Avatar"
+    />
+
+    <div class="flex-1">
+      <!-- Username -->
+      <h3 class="text-base font-semibold leading-tight text-white">
         {{ comment().user.name }}
       </h3>
 
-      <p class="mt-4 line-clamp-2 text-sm text-pretty text-gray-100">
+      <!-- Comment Text -->
+      <p class="mt-2 text-sm text-gray-300 whitespace-pre-line">
         {{ comment().text }}
       </p>
+
+      <!-- Actions -->
+      <div class="mt-4 flex items-center gap-6 text-sm text-gray-400">
+        <button
+          (click)="toggleReply()"
+          class="hover:text-white transition-colors"
+        >
+          💬 Reply
+        </button>
+
+        <button
+          class="flex items-center gap-1 hover:text-red-400 transition-colors"
+          (click)="toggleLike()"
+          [class.text-red-400]="comment().liked"
+        >
+          <span class="pb-1 text-[15px]">{{ comment().likes }}</span>
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            class="w-5 h-5"
+            viewBox="0 0 24 24"
+          >
+            <path
+              [attr.fill]="comment().liked ? '#ef4444' : 'none'"
+              [attr.stroke]="comment().liked ? '#ef4444' : '#ffffff'"
+              stroke-width="1.5"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              d="M21.752 7.376c0-2.162-1.752-3.914-3.914-3.914-1.378 0-2.593.704-3.318 1.782-.725-1.078-1.94-1.782-3.318-1.782-2.162 0-3.914 1.752-3.914 3.914 0 5.677 7.232 10.327 7.232 10.327s7.232-4.65 7.232-10.327z"
+            />
+          </svg>
+        </button>
+
+        <button
+          class="transition-transform duration-200"
+          [class.rotate-180]="expanded()"
+          (click)="toggleExpand()"
+        >
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke-width="1.5"
+            stroke="currentColor"
+            class="w-5 h-5 text-gray-400 hover:text-white transition"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              d="m19.5 8.25-7.5 7.5-7.5-7.5"
+            />
+          </svg>
+        </button>
+      </div>
+
+      <!-- Reply Box -->
+      @if (isReplying()) {
+      <section class="mt-4 pl-6 border-l border-gray-700">
+        <app-comment-form
+          placeholder="Write your reply"
+          buttonText="Send"
+          (formSubmitted)="createComment($event)"
+        ></app-comment-form>
+      </section>
+      }
+
+      <!-- Nested Comments -->
+      @if (expanded()) {
+      <section class="mt-4 pl-6 border-l border-gray-700 space-y-4">
+        @for (ncomment of nestedComments(); track ncomment._id) {
+        <app-comment [comment]="ncomment"></app-comment>
+        }
+      </section>
+      }
     </div>
   </div>
-  <dl class="mt-6 flex justify-end gap-4 lg:gap-6 cursor-pointer">
-    <a
-      (click)="toggleReply()"
-      class="group relative inline-block overflow-hidden border border-gray-200 px-6 py-1 focus:ring-3 focus:outline-hidden"
-    >
-      <span
-        class="absolute inset-y-0 left-0 w-[2px] bg-gray-200 transition-all group-hover:w-full"
-      ></span>
-
-      <span
-        class="relative text-sm font-medium text-gray-100 transition-colors group-hover:text-black"
-      >
-        Reply
-      </span>
-    </a>
-    <button
-      class="flex items-center cursor-pointer"
-      (click)="toggleLike()"
-      [class.text-red-500]="comment().liked"
-    >
-      <span class="me-2 text-lg"> {{ comment().likes }} </span>
-      <svg
-        xmlns="http://www.w3.org/2000/svg"
-        viewBox="0 0 24 24"
-        class="size-6"
-      >
-        <path
-          [attr.fill]="comment().liked ? '#ef4444' : 'black'"
-          d="M7.493 18.5c-.425 0-.82-.236-.975-.632A7.48 7.48 0 0 1 6 15.125c0-1.75.599-3.358 1.602-4.634.151-.192.373-.309.6-.397.473-.183.89-.514 1.212-.924a9.042 9.042 0 0 1 2.861-2.4c.723-.384 1.35-.956 1.653-1.715a4.498 4.498 0 0 0 .322-1.672V2.75A.75.75 0 0 1 15 2a2.25 2.25 0 0 1 2.25 2.25c0 1.152-.26 2.243-.723 3.218-.266.558.107 1.282.725 1.282h3.126c1.026 0 1.945.694 2.054 1.715.045.422.068.85.068 1.285a11.95 11.95 0 0 1-2.649 7.521c-.388.482-.987.729-1.605.729H14.23c-.483 0-.964-.078-1.423-.23l-3.114-1.04a4.501 4.501 0 0 0-1.423-.23h-.777ZM2.331 10.727a11.969 11.969 0 0 0-.831 4.398 12 12 0 0 0 .52 3.507C2.28 19.482 3.105 20 3.994 20H4.9c.445 0 .72-.498.523-.898a8.963 8.963 0 0 1-.924-3.977c0-1.708.476-3.305 1.302-4.666.245-.403-.028-.959-.5-.959H4.25c-.832 0-1.612.453-1.918 1.227Z"
-        />
-      </svg>
-    </button>
-    <button
-      class="cursor-pointer duration-200"
-      [class.rotate-180]="expanded()"
-      (click)="toggleExpand()"
-    >
-      <svg
-        xmlns="http://www.w3.org/2000/svg"
-        fill="none"
-        viewBox="0 0 24 24"
-        stroke-width="1.5"
-        stroke="currentColor"
-        class="size-6"
-      >
-        <path
-          stroke-linecap="round"
-          stroke-linejoin="round"
-          d="m19.5 8.25-7.5 7.5-7.5-7.5"
-        />
-      </svg>
-    </button>
-  </dl>
-  @if (isReplying()) {
-  <section class="nested-comments duration-200 my-4">
-    <app-comment-form placeholder="Write your reply" buttonText="Send" (formSubmitted)="createComment($event)"></app-comment-form>
-  </section>
-  } @if (expanded()) {
-  <section class="nested-comments duration-200 my-4">
-    @for (ncomment of nestedComments(); track ncomment._id) {
-    <app-comment [comment]="ncomment" ></app-comment>
-    }
-  </section>
-  }
 </article>

@@ -1,11 +1,4 @@
-import {
-  Component,
-  computed,
-  effect,
-  inject,
-  input,
-  signal,
-} from '@angular/core';
+import { Component, effect, inject, input, signal } from '@angular/core';
 import { CommentForm } from '../comment-form/comment-form';
 import { Comment as CommentType } from '../../interfaces/comment.interface';
 import { CommentDto, CommentService } from '../../services/comment';
@@ -21,9 +14,10 @@ export class Comment {
   expanded = signal(false);
   isReplying = signal(false);
   commentService = inject(CommentService);
+  userService = inject(UserService);
+
   comment = input.required<CommentType>();
   nestedComments = signal<CommentType[]>([]);
-  userService = inject(UserService);
 
   nestedCommentsEffect = effect(() => {
     if (this.expanded()) {

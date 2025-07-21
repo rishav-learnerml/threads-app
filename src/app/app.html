@@ -1,29 +1,37 @@
-<div class="min-h-screen flex flex-col">
-  <header
-    class="h-12 bg-slate-900 text-white flex justify-between items-center px-3"
-  >
-    <div class="flex">
-      <img src="threadslight.svg" alt="logo" width="20" />
-      <span class="ms-2 text-lg font-semibold">Threads 2.0</span>
+<div class="min-h-screen flex flex-col bg-black text-white font-sans">
+  <!-- Header -->
+  <header class="h-14 flex items-center justify-between px-4 border-b border-gray-800 bg-black sticky top-0 z-10">
+    <!-- Logo & Title -->
+    <div class="flex items-center gap-3">
+      <img src="threadslight.svg" alt="logo" class="h-6 w-6" />
+      <span class="text-lg font-bold tracking-tight">Threads 2.0</span>
     </div>
+
+    <!-- Navigation -->
     <nav>
-      <ul class="flex gap-4">
-        <li
-          routerLinkActive="underline underline-offset-4"
-          class="hover:underline hover:underline-offset-4"
-        >
-          <a routerLink="/home"> Home </a>
+      <ul class="flex gap-6 text-sm font-medium">
+        <li>
+          <a
+            routerLink="/home"
+            routerLinkActive="text-white border-b-2 border-white pb-[2px]"
+            class="text-gray-400 hover:text-white transition-all"
+            >Home</a
+          >
         </li>
-        <li
-          routerLinkActive="underline underline-offset-4"
-          class="hover:underline hover:underline-offset-4"
-        >
-          <a routerLink="/about"> About </a>
+        <li>
+          <a
+            routerLink="/about"
+            routerLinkActive="text-white border-b-2 border-white pb-[2px]"
+            class="text-gray-400 hover:text-white transition-all"
+            >About</a
+          >
         </li>
       </ul>
     </nav>
   </header>
-  <main class="px-3 py-4">
+
+  <!-- Main Content -->
+  <main class="flex-1 px-4 py-6">
     <router-outlet></router-outlet>
   </main>
 </div>
