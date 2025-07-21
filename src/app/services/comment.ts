@@ -14,6 +14,7 @@ export class CommentService {
     if (parentId) {
       url += `?parentId=${parentId}`;
     }
+    console.log('url', url);
     return this.http.get<Comment[]>(url);
   }
 
