@@ -1,4 +1,11 @@
-import { Component, input, output } from '@angular/core';
+import {
+  Component,
+  input,
+  output,
+  signal,
+  ViewChild,
+  ElementRef,
+} from '@angular/core';
 
 @Component({
   selector: 'app-comment-form',
@@ -10,21 +17,61 @@ export class CommentForm {
   placeholder = input<string>('Write something...');
   buttonText = input<string>('Create');
   formSubmitted = output<{ text: string }>();
+  isLoading = signal(false);
+
+  @ViewChild('inputBoxRef') inputBoxRef!: ElementRef<HTMLTextAreaElement>;
+
+  async generateWithAI() {
+    this.isLoading.set(true);
+
+    try {
+      const prompt = `Write a short social media post in a fun, relatable tone. Keep it within 280 characters.`;
+
+      const res = await fetch(
+        'https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent',
+        {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'X-goog-api-key': 'AIzaSyA0nHw39pi7w1T0Z-qvs-nadUSxydLn8vw', // Replace with env variable
+          },
+          body: JSON.stringify({
+            contents: [
+              {
+                parts: [{ text: prompt }],
+              },
+            ],
+          }),
+        }
+      );
+
+      const data = await res.json();
+      const aiContent = data.candidates?.[0]?.content?.parts?.[0]?.text;
+
+      if (aiContent) {
+        this.inputBoxRef.nativeElement.value = aiContent;
+      } else {
+        alert('AI failed to generate content.');
+      }
+    } catch (err) {
+      console.error('AI error:', err);
+      alert('Something went wrong with AI generation.');
+    } finally {
+      this.isLoading.set(false);
+    }
+  }
 
   formSubmit(event: Event) {
     event.preventDefault();
-    const form = event.target as HTMLFormElement;
-    const content = form.elements.namedItem('input-box') as HTMLTextAreaElement;
-    const contentValue = content.value.trim();
+    const content = this.inputBoxRef?.nativeElement?.value?.trim();
 
-    if (contentValue) {
-      // Emit the content to the parent component or handle it here
-      console.log('Comment submitted:', contentValue);
-      this.formSubmitted.emit({ text: contentValue });
+    if (content) {
+      this.formSubmitted.emit({ text: content });
     } else {
       console.warn('Comment cannot be empty');
     }
 
-    form.reset(); // Reset the form after submission
+    this.inputBoxRef.nativeElement.value = '';
+    this.isLoading.set(false);
   }
 }

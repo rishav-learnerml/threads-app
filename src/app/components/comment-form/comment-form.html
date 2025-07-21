@@ -3,13 +3,23 @@
   (submit)="formSubmit($event)"
 >
   <textarea
+  #inputBoxRef
     name="input-box"
     rows="3"
+    name="userInput"
     class="w-full resize-none rounded-md border border-gray-700 bg-[#1a1a1a] px-4 py-2 text-sm text-gray-200 placeholder-gray-500 focus:ring-2 focus:ring-white focus:outline-none"
-    [placeholder]="placeholder()"
+    placeholder="What's on your mind?"
   ></textarea>
 
-  <div class="flex justify-end">
+  <div class="flex justify-between items-center">
+    <button
+      type="button"
+      class="rounded-full bg-[#333] text-white px-4 py-1.5 text-sm hover:bg-[#444] transition-all"
+      (click)="generateWithAI()"
+    >
+     {{ isLoading() ? 'Generating...' : 'Create with AI ✨' }}
+    </button>
+
     <button
       type="submit"
       class="rounded-full bg-white text-black px-5 py-1.5 text-sm font-medium hover:bg-gray-200 transition-all"
